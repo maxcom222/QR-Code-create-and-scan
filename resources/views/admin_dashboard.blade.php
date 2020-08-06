@@ -155,13 +155,13 @@
                             <div class="card-content">
                                 <div class="card-body">
                                     <div class="row pb-50">
-                                        <div class="col-lg-6 col-12 d-flex justify-content-between flex-column order-lg-1 order-2 mt-lg-0 mt-2">
+                                        <div class="col-md-12 d-flex justify-content-between flex-column order-lg-1 order-2 mt-lg-0 mt-2">
                                             <h2 class="text-bold-700 mb-25">User Management</h2>
                                         </div>
                                     </div>
                                     <hr />
                                     <div class="row avg-sessions">
-                                        <div class="col-12">
+                                        <div class="col-md-12">
                                             <div class="table-responsive mt-1">
                                                 <table class="table table-hover-animation mb-0" id="user_table">
                                                     <thead>
@@ -193,8 +193,23 @@
                                                 </table>
                                             </div>
                                         </div>
-                                        <div class="col-12">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <div class="row pb-50">
+                                        <div class="col-md-12 d-flex justify-content-between flex-column order-lg-1 order-2 mt-lg-0 mt-2">
                                             <h2 class="text-bold-700 mb-25">QR Code Management</h2>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row avg-sessions">
+                                        <div class="col-md-12">
                                             <div class="table-responsive mt-1">
                                                 <table class="table table-hover-animation mb-0" id="qrcode_table">
                                                     <thead>
@@ -295,7 +310,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6 col-12">
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between pb-0">
                                 <h4 class="card-title">QR Code Scan Rate</h4>
