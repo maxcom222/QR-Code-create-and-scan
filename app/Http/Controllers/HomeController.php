@@ -97,10 +97,12 @@ class HomeController extends Controller
                 array_push($scanned_values, $one->count);
         }
         $users = User::query()->where('email', '<>', 'kewrunner@gmail.com')->get();
+
+        $qrcodes = Campaign::query()->orderBy("id")->get();
         return view('admin_dashboard',['pageconfig' => $pageconfig, 'compaigns_count' => $compaigns_count, 'compaignhits_count'=>$compaignhits_count
             , 'compaigns_values'=>json_encode($compaigns_values), 'compaignhits_values'=>json_encode($compaignhits_values)
             , 'campaigns' => $campaigns, 'scanned_values' => json_encode($scanned_values)
-            , 'users'=>$users]);
+            , 'users'=>$users, 'qrcodes'=>$qrcodes]);
     }
     public function getCcoordinates(Request $request){
         $type = $request->type;

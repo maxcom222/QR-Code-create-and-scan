@@ -220,87 +220,17 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <tr>
-                                                        <td>#879985</td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-info">Review</button>
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-danger">Delete</button>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>#156897</td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-info">Review</button>
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-danger">Delete</button>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>#568975</td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-info">Review</button>
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-danger">Delete</button>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>#245689</td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-info">Review</button>
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-danger">Delete</button>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>#245689</td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-info">Review</button>
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-danger">Delete</button>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>#245689</td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-info">Review</button>
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-danger">Delete</button>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>#245689</td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-info">Review</button>
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-danger">Delete</button>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>#245689</td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-info">Review</button>
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-danger">Delete</button>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>#245689</td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-info">Review</button>
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-danger">Delete</button>
-                                                        </td>
-                                                    </tr>
+                                                    @foreach($qrcodes as $qrcode)
+                                                        <tr>
+                                                            <td>{{ $qrcode->qrcode }}</td>
+                                                            <td>
+                                                                <button class="btn btn-sm btn-info" id="code_review_{{$qrcode->id}}" onclick="reviewCode({{ $qrcode->id }})">Review</button>
+                                                            </td>
+                                                            <td>
+                                                                <button class="btn btn-sm btn-danger" id="code_delete_{{$qrcode->id}}" onclick="deleteCode({{ $qrcode->id }})">Delete</button>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -520,8 +450,8 @@
             initBarChart();
         })
         function lockUser(state, user_id) {
-            console.log(state + ":" +  user_id)
             if (state) {
+
                 toastr.success('That user was locked successfully.', 'Notification', {
                     "showMethod": "fadeIn",
                     "hideMethod": "fadeOut",
@@ -540,6 +470,7 @@
             }
         }
         function deleteUser(user_id) {
+            if(!confirm("Are you really?")) return;
             toastr.info('That user was deleted successfully.', 'Notification', {
                 "showMethod": "fadeIn",
                 "hideMethod": "fadeOut",
@@ -548,6 +479,20 @@
                 timeOut: 2000
             });
             user_table.row($("#btn_" + user_id).parents("tr")).remove().draw();
+        }
+        function deleteCode(id) {
+            if(!confirm("Are you really?")) return;
+            toastr.info('That QR Code was deleted successfully.', 'Notification', {
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut",
+                "closeButton": true,
+                "progressBar": true,
+                timeOut: 2000
+            });
+            qrcode_table.row($("#code_delete_" + id).parents("tr")).remove().draw();
+        }
+        function reviewCode(id) {
+
         }
         function initBarChart() {
             let campaigns = @php echo $campaigns; @endphp;
