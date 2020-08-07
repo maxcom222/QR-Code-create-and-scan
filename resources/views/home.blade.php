@@ -13,6 +13,10 @@
         .pagination .page-item.prev .page-link:before, .pagination .page-item.previous .page-link:before{
             content: none;
         }
+        .dropdown .btn:not(.btn-sm):not(.btn-lg), .dropdown .btn:not(.btn-sm):not(.btn-lg).dropdown-toggle
+        {
+            padding: 0 !important;
+        }
     </style>
 @endsection
 
