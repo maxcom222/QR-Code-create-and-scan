@@ -263,6 +263,27 @@
         </div>
     </div>
 </div>
+<div class="modal fade text-center" id="backdrop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel20" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xs" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="code_title"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="code_url">
+
+                </p>
+                <img id="code_preview" src="" width="200">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- END: Content-->
 <div class="sidenav-overlay"></div>
 <div class="drag-target"></div>
@@ -451,48 +472,100 @@
         })
         function lockUser(state, user_id) {
             if (state) {
+                $.ajax({
+                    url: "{{ url('/setlockuser') }}",
+                    data: {state : 1, user_id: user_id},
+                    dataType: "text",
+                    success : function (data) {
+                        toastr.success('That user was locked successfully.', 'Notification', {
+                            "showMethod": "fadeIn",
+                            "hideMethod": "fadeOut",
+                            "closeButton": true,
+                            "progressBar": true,
+                            timeOut: 2000
+                        });
+                    },
+                    failure: function () {
 
-                toastr.success('That user was locked successfully.', 'Notification', {
-                    "showMethod": "fadeIn",
-                    "hideMethod": "fadeOut",
-                    "closeButton": true,
-                    "progressBar": true,
-                    timeOut: 2000
+                    }
                 });
             }else{
-                toastr.success('That user was unlocked successfully.', 'Notification', {
-                    "showMethod": "fadeIn",
-                    "hideMethod": "fadeOut",
-                    "closeButton": true,
-                    "progressBar": true,
-                    timeOut: 2000
+                $.ajax({
+                    url: "{{ url('/setlockuser') }}",
+                    data: {state : 0, user_id: user_id},
+                    dataType: "text",
+                    success : function (data) {
+                        toastr.success('That user was unlocked successfully.', 'Notification', {
+                            "showMethod": "fadeIn",
+                            "hideMethod": "fadeOut",
+                            "closeButton": true,
+                            "progressBar": true,
+                            timeOut: 2000
+                        });
+                    },
+                    failure: function () {
+
+                    }
                 });
             }
         }
         function deleteUser(user_id) {
             if(!confirm("Are you really?")) return;
-            toastr.info('That user was deleted successfully.', 'Notification', {
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut",
-                "closeButton": true,
-                "progressBar": true,
-                timeOut: 2000
+            $.ajax({
+                url: "{{ url('/deleteuser') }}",
+                data: {user_id: user_id},
+                dataType: "text",
+                success : function (data) {
+                    toastr.info('That user was deleted successfully.', 'Notification', {
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut",
+                        "closeButton": true,
+                        "progressBar": true,
+                        timeOut: 2000
+                    });
+                    user_table.row($("#btn_" + user_id).parents("tr")).remove().draw();
+                },
+                failure: function () {
+
+                }
             });
-            user_table.row($("#btn_" + user_id).parents("tr")).remove().draw();
         }
         function deleteCode(id) {
             if(!confirm("Are you really?")) return;
-            toastr.info('That QR Code was deleted successfully.', 'Notification', {
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut",
-                "closeButton": true,
-                "progressBar": true,
-                timeOut: 2000
+            $.ajax({
+                url: "{{ url('/deletecode') }}",
+                data: {qrcode_id: id},
+                dataType: "text",
+                success : function (data) {
+                    toastr.info('That QR Code was deleted successfully.', 'Notification', {
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut",
+                        "closeButton": true,
+                        "progressBar": true,
+                        timeOut: 2000
+                    });
+                    qrcode_table.row($("#code_delete_" + id).parents("tr")).remove().draw();
+                },
+                failure: function () {
+
+                }
             });
-            qrcode_table.row($("#code_delete_" + id).parents("tr")).remove().draw();
         }
         function reviewCode(id) {
+            $.ajax({
+                url: "{{ url('/reviewcode') }}",
+                data: {qrcode_id: id},
+                dataType: "json",
+                success : function (data) {
+                    $("#code_url").text(data.url);
+                    $("#code_title").text(data.qrcode);
+                    $("#code_preview").attr("src", "/qrcode/" + data.id);
+                    $("#backdrop").modal();
+                },
+                failure: function () {
 
+                }
+            });
         }
         function initBarChart() {
             let campaigns = @php echo $campaigns; @endphp;
