@@ -47,7 +47,7 @@
                             <div class="card mb-4">
                                 <div class="card-header">Usage Statistics</div>
                                 <div class="card-body">
-                                    <div id="line-chart"></div>
+                                    <canvas id="line-chart"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -154,6 +154,8 @@
 @section('scripts')
     @parent
     <script src="{{ asset("app-assets/vendors/js/charts/apexcharts.js") }}"></script>
+    <script src="{{ asset("app-assets/vendors/js/charts/chart.min.js") }}"></script>
+    <script src="{{ asset("app-assets/vendors/js/extensions/tether.min.js") }}"></script>
     <script
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsucrEdmswqYrw0f6ej3bf4M4suDeRgNA"
         defer
@@ -215,65 +217,93 @@
                 initMap(this.value);
             });
             initMap("today");
-            ////////////////////////////////////////////////////
-            let campaigns = @php echo $campaigns; @endphp;
-            let values = @php echo $values; @endphp;
-            // campaigns.splice(0, 0, "");
-            // console.log(values);
-            var $primary = '#7367F0',
-                $success = '#28C76F',
-                $danger = '#EA5455',
-                $warning = '#FF9F43',
-                $info = '#00cfe8',
-                $label_color_light = '#dae1e7';
-            var themeColors = [$primary, $success, $danger, $warning, $info];
-            var yaxis_opposite = false;
-            if($('html').data('textdirection') == 'rtl'){
-                yaxis_opposite = true;
-            }
-            var lineChartOptions = {
-                chart: {
-                    height: 350,
-                    type: 'line',
-                    zoom: {
-                        enabled: false
-                    }
-                },
-                colors: themeColors,
-                dataLabels: {
-                    enabled: false
-                },
-                stroke: {
-                    curve: 'straight'
-                },
-                series: [{
-                    name: "Count",
-                    data: values,
-                }],
-                title: {
-                    text: 'QR Code scanned count',
-                    align: 'left'
-                },
-                grid: {
-                    row: {
-                        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-                        opacity: 0.5
-                    },
-                },
-                xaxis: {
-                    categories: campaigns,
-                },
-                yaxis: {
-                    tickAmount: 5,
-                    opposite: yaxis_opposite
-                }
-            }
-            var lineChart = new ApexCharts(
-                document.querySelector("#line-chart"),
-                lineChartOptions
-            );
-            lineChart.render();
+            initBarChart();
+            $("#line-chart").css("min-height", "450px");
             $("#map").css("height", (parseFloat($("#line-chart").css("height").replace("px", "")) - 23 - 8) + "px");
         });
+        function initBarChart() {
+            let campaigns = @php echo $campaigns; @endphp;
+            let values = @php echo $values; @endphp;
+            var $primary = '#7367F0';
+            var $success = '#28C76F';
+            var $danger = '#EA5455';
+            var $warning = '#FF9F43';
+            var $label_color = '#1E1E1E';
+            var grid_line_color = '#dae1e7';
+            var scatter_grid_color = '#f3f3f3';
+            var $scatter_point_light = '#D1D4DB';
+            var $scatter_point_dark = '#5175E0';
+            var $white = '#fff';
+            var $black = '#000';
+            var themeColors = [];
+            for (var i = 0; i < values.length; i++)
+                themeColors.push($success);
+            var barChartctx = $("#line-chart");
+            // Chart Options
+            var barchartOptions = {
+                // Elements options apply to all of the options unless overridden in a dataset
+                // In this case, we are setting the border of each bar to be 2px wide
+                elements: {
+                    rectangle: {
+                        borderWidth: 2,
+                        borderSkipped: 'left'
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+                responsiveAnimationDuration: 500,
+                legend: { display: false },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        gridLines: {
+                            color: grid_line_color,
+                        },
+                        scaleLabel: {
+                            display: true,
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        gridLines: {
+                            color: grid_line_color,
+                        },
+                        scaleLabel: {
+                            display: true,
+                        },
+                        ticks: {
+                            stepSize: 10
+                        },
+                    }],
+                },
+                title: {
+                    display: true,
+                    text: ''
+                },
+
+            };
+            // Chart Data
+            var barchartData = {
+                labels: campaigns,
+                datasets: [{
+                    label: "Scanned Count",
+                    data: values,
+                    backgroundColor: themeColors,
+                    borderColor: "transparent"
+                }]
+            };
+
+            var barChartconfig = {
+                type: 'bar',
+
+                // Chart Options
+                options: barchartOptions,
+
+                data: barchartData
+            };
+
+            // Create the chart
+            var barChart = new Chart(barChartctx, barChartconfig);
+        }
     </script>
 @endsection
