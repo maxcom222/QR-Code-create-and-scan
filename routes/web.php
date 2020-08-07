@@ -13,12 +13,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'HomeController@index')->name('home');
-Route::get('/admin_dashboard', 'HomeController@admin_dashboard');
-Route::get('/home', 'HomeController@index');
-Route::get('/getCcoordinates', 'HomeController@getCcoordinates');
-Route::match(['get', 'post'],'/campaign', 'HomeController@campaign');
-Route::get('/viewcampaigns/{function?}/{data?}', 'HomeController@viewcampaigns');
+Route::get('/', 'HomeController@index')->name('home')->middleware(['check-locked']);
+Route::get('/locked_user', 'HomeController@locked_user')->name('locked_user');
+Route::get('/admin_dashboard', 'HomeController@admin_dashboard')->middleware(['check-locked']);
+Route::get('/home', 'HomeController@index')->middleware(['check-locked']);
+Route::get('/getCcoordinates', 'HomeController@getCcoordinates')->middleware(['check-locked']);
+
+Route::get('/setlockuser', 'HomeController@setlockuser');
+Route::get('/deleteuser', 'HomeController@deleteuser');
+Route::get('/deletecode', 'HomeController@deletecode');
+Route::get('/reviewcode', 'HomeController@reviewcode');
+
+Route::match(['get', 'post'],'/campaign', 'HomeController@campaign')->middleware(['check-locked']);
+Route::get('/viewcampaigns/{function?}/{data?}', 'HomeController@viewcampaigns')->middleware(['check-locked']);
 
 
 Auth::routes(['verify' => true]);

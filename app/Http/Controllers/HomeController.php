@@ -156,6 +156,48 @@ class HomeController extends Controller
         return view('campaign',['pageconfig' => $pageconfig]);
     }
 
+    public function setlockuser(Request $request)
+    {
+        $user = User::find($request->user_id);
+        $user->islocked = $request->state;
+        $user->save();
+        return "OK";
+    }
+
+    public function deleteuser(Request $request)
+    {
+        $user = User::find($request->user_id);
+        $user->delete();
+        return "OK";
+    }
+
+    public function deletecode(Request $request)
+    {
+        $user = Campaign::find($request->qrcode_id);
+        $user->delete();
+        return "OK";
+    }
+
+    public function reviewcode(Request $request)
+    {
+        $user = Campaign::find($request->qrcode_id);
+        return $user;
+    }
+
+    public function locked_user(){
+        $query = DB::table('campaignhits')
+            ->selectRaw('campaignhits.*,campaigns.qrcode')
+            ->join('campaigns','campaigns.id', 'campaignhits.campaignid')
+            ->where("campaigns.user_id", Auth::user()->id);
+
+        $rs = $query->get();
+        $pageconfig = [
+            'title' => 'Dashboard',
+            'rs' => $rs
+        ];
+        return view("locked", ["pageconfig"=>$pageconfig]);
+    }
+
     public function viewcampaigns(Request $request)
     {
         if($request->segment(2) == 'view')
